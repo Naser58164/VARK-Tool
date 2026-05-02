@@ -1,0 +1,1013 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>VARK Learning Style Questionnaire</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0f2342;
+    --teal: #1a6b6b;
+    --gold: #c8922a;
+    --cream: #f9f5ef;
+    --white: #ffffff;
+    --gray-100: #f3f4f6;
+    --gray-300: #d1d5db;
+    --gray-500: #6b7280;
+    --gray-700: #374151;
+    --v-color: #2563eb;
+    --a-color: #059669;
+    --r-color: #7c3aed;
+    --k-color: #dc2626;
+    --radius: 12px;
+    --shadow: 0 4px 24px rgba(15,35,66,0.12);
+    --shadow-lg: 0 8px 48px rgba(15,35,66,0.18);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--navy);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--navy);
+    padding: 20px 0 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      45deg, transparent, transparent 40px,
+      rgba(200,146,42,0.04) 40px, rgba(200,146,42,0.04) 41px
+    );
+  }
+  .header-inner { position: relative; z-index: 1; padding: 0 24px 28px; }
+  .vark-badge {
+    display: inline-flex; gap: 2px; margin-bottom: 16px;
+    border: 2px solid var(--gold); border-radius: 8px; overflow: hidden;
+  }
+  .vark-badge span {
+    padding: 6px 14px;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem; font-weight: 700; color: var(--white);
+    letter-spacing: 2px;
+  }
+  .vark-badge .v { background: rgba(37,99,235,0.3); }
+  .vark-badge .a { background: rgba(5,150,105,0.3); }
+  .vark-badge .r { background: rgba(124,58,237,0.3); }
+  .vark-badge .k { background: rgba(220,38,38,0.3); }
+
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    color: var(--white); font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 6px;
+  }
+  header p {
+    color: rgba(255,255,255,0.65);
+    font-size: 0.9rem; font-weight: 300;
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-wrap {
+    background: rgba(0,0,0,0.3); height: 6px;
+    border-radius: 0; position: relative;
+  }
+  #progress-bar {
+    height: 100%; width: 0%;
+    background: linear-gradient(90deg, var(--gold), #e8b84b);
+    transition: width 0.4s ease;
+    border-radius: 0 3px 3px 0;
+  }
+
+  /* ── MAIN CONTAINER ── */
+  main {
+    max-width: 820px; margin: 0 auto;
+    padding: 32px 20px 60px;
+  }
+
+  /* ── INSTRUCTION CARD ── */
+  .instruction-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    border-left: 5px solid var(--gold);
+    box-shadow: var(--shadow);
+    margin-bottom: 32px;
+    display: flex; gap: 16px; align-items: flex-start;
+  }
+  .instruction-card .icon {
+    font-size: 1.8rem; flex-shrink: 0; margin-top: 2px;
+  }
+  .instruction-card h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem; color: var(--navy); margin-bottom: 6px;
+  }
+  .instruction-card p {
+    font-size: 0.875rem; color: var(--gray-700); line-height: 1.6;
+  }
+
+  /* ── QUESTION COUNTER ── */
+  .q-counter {
+    font-size: 0.78rem; font-weight: 600;
+    color: var(--gold); letter-spacing: 2px;
+    text-transform: uppercase; margin-bottom: 28px;
+  }
+
+  /* ── QUESTION CARD ── */
+  .question-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 24px 28px;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+    transition: box-shadow 0.2s;
+    animation: slideIn 0.3s ease;
+  }
+  .question-card:hover { box-shadow: var(--shadow-lg); }
+
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .q-number {
+    display: inline-block;
+    width: 32px; height: 32px;
+    background: var(--navy); color: var(--white);
+    border-radius: 50%; text-align: center; line-height: 32px;
+    font-size: 0.85rem; font-weight: 600;
+    margin-bottom: 12px; flex-shrink: 0;
+  }
+  .q-text {
+    font-size: 1rem; font-weight: 500;
+    line-height: 1.55; color: var(--navy);
+    margin-bottom: 16px;
+  }
+
+  /* ── OPTIONS ── */
+  .options { display: grid; gap: 8px; }
+
+  .option-label {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 16px;
+    border: 2px solid var(--gray-300);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    font-size: 0.9rem; color: var(--gray-700);
+    line-height: 1.4;
+  }
+  .option-label:hover {
+    border-color: var(--teal);
+    background: rgba(26,107,107,0.05);
+    color: var(--navy);
+  }
+  .option-label input[type="checkbox"] { display: none; }
+  .option-label .opt-key {
+    display: flex; align-items: center; justify-content: center;
+    width: 28px; height: 28px; flex-shrink: 0;
+    border: 2px solid var(--gray-300);
+    border-radius: 6px;
+    font-weight: 700; font-size: 0.8rem;
+    color: var(--gray-500);
+    transition: all 0.18s;
+  }
+  .option-label.checked {
+    border-color: var(--teal);
+    background: rgba(26,107,107,0.08);
+    color: var(--navy);
+  }
+  .option-label.checked .opt-key {
+    background: var(--teal); border-color: var(--teal);
+    color: var(--white);
+  }
+
+  /* ── SUBMIT BUTTON ── */
+  .submit-wrap {
+    text-align: center; margin-top: 36px;
+  }
+  #submit-btn {
+    padding: 16px 48px;
+    background: linear-gradient(135deg, var(--navy), var(--teal));
+    color: var(--white); border: none;
+    border-radius: 50px; font-size: 1rem;
+    font-family: 'DM Sans', sans-serif; font-weight: 600;
+    cursor: pointer; box-shadow: var(--shadow);
+    transition: all 0.2s;
+    letter-spacing: 0.5px;
+  }
+  #submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(15,35,66,0.25);
+  }
+  #submit-btn:disabled {
+    background: var(--gray-300); cursor: not-allowed;
+    transform: none; box-shadow: none;
+  }
+  .submit-note {
+    margin-top: 10px; font-size: 0.8rem;
+    color: var(--gray-500);
+  }
+  #answer-count { font-weight: 600; color: var(--teal); }
+
+  /* ── RESULTS SECTION ── */
+  #results-section { display: none; animation: fadeIn 0.5s ease; }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  .results-header {
+    text-align: center; margin-bottom: 32px;
+  }
+  .results-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem; color: var(--navy); margin-bottom: 8px;
+  }
+  .results-header p {
+    color: var(--gray-500); font-size: 0.95rem;
+  }
+
+  /* ── DOMINANT STYLE BADGE ── */
+  .dominant-badge {
+    background: var(--navy);
+    border-radius: var(--radius);
+    padding: 28px 32px;
+    text-align: center;
+    color: var(--white);
+    margin-bottom: 28px;
+    box-shadow: var(--shadow-lg);
+    position: relative; overflow: hidden;
+  }
+  .dominant-badge::after {
+    content: attr(data-letter);
+    position: absolute; right: -10px; top: -20px;
+    font-family: 'Playfair Display', serif;
+    font-size: 9rem; font-weight: 700;
+    color: rgba(255,255,255,0.05);
+    line-height: 1;
+    pointer-events: none;
+  }
+  .dominant-badge .label {
+    font-size: 0.75rem; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--gold);
+    margin-bottom: 8px; font-weight: 600;
+  }
+  .dominant-badge .style-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem; font-weight: 700;
+    margin-bottom: 4px;
+  }
+  .dominant-badge .style-sub {
+    font-size: 0.9rem; opacity: 0.7;
+  }
+
+  /* ── SCORE BARS ── */
+  .score-bars {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 28px;
+    box-shadow: var(--shadow);
+    margin-bottom: 28px;
+  }
+  .score-bars h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem; margin-bottom: 20px;
+    color: var(--navy);
+  }
+  .bar-row { margin-bottom: 18px; }
+  .bar-row:last-child { margin-bottom: 0; }
+  .bar-meta {
+    display: flex; justify-content: space-between;
+    align-items: center; margin-bottom: 6px;
+  }
+  .bar-label {
+    display: flex; align-items: center; gap: 8px;
+    font-weight: 600; font-size: 0.9rem;
+  }
+  .bar-dot {
+    width: 10px; height: 10px; border-radius: 50%;
+  }
+  .bar-score {
+    font-weight: 700; font-size: 1rem;
+  }
+  .bar-track {
+    height: 10px; background: var(--gray-100);
+    border-radius: 99px; overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%; border-radius: 99px;
+    transition: width 1s cubic-bezier(0.34,1.56,0.64,1);
+    width: 0%;
+  }
+
+  /* ── PROFILE CARDS GRID ── */
+  .profile-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px; margin-bottom: 28px;
+  }
+  .profile-card {
+    background: var(--white);
+    border-radius: var(--radius);
+    padding: 22px 22px 24px;
+    box-shadow: var(--shadow);
+    border-top: 4px solid;
+    position: relative;
+  }
+  .profile-card .pc-header {
+    display: flex; align-items: center; gap: 10px;
+    margin-bottom: 14px;
+  }
+  .profile-card .pc-icon {
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.2rem;
+  }
+  .profile-card .pc-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem; font-weight: 700;
+    color: var(--navy);
+  }
+  .profile-card .pc-sub {
+    font-size: 0.75rem; color: var(--gray-500);
+  }
+  .profile-card .pc-desc {
+    font-size: 0.85rem; line-height: 1.65;
+    color: var(--gray-700); margin-bottom: 14px;
+  }
+  .profile-card .pc-tag {
+    font-size: 0.75rem; font-weight: 600;
+    color: var(--gray-500); text-transform: uppercase;
+    letter-spacing: 1px; margin-bottom: 8px;
+  }
+  .pc-tips { list-style: none; }
+  .pc-tips li {
+    font-size: 0.82rem; color: var(--gray-700);
+    padding: 4px 0 4px 16px; position: relative;
+  }
+  .pc-tips li::before {
+    content: '→';
+    position: absolute; left: 0;
+    color: var(--gray-400); font-size: 0.75rem;
+  }
+  .pc-score-chip {
+    position: absolute; top: 14px; right: 14px;
+    font-weight: 700; font-size: 1rem;
+    padding: 4px 10px; border-radius: 99px;
+    background: var(--gray-100); color: var(--navy);
+  }
+
+  /* ── EDUCATOR SECTION ── */
+  .educator-box {
+    background: linear-gradient(135deg, var(--navy) 0%, #0d3460 100%);
+    border-radius: var(--radius);
+    padding: 32px;
+    color: var(--white);
+    margin-bottom: 28px;
+    box-shadow: var(--shadow-lg);
+  }
+  .educator-box h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem; margin-bottom: 6px;
+    color: var(--gold);
+  }
+  .educator-box .edu-sub {
+    font-size: 0.85rem; opacity: 0.7; margin-bottom: 20px;
+  }
+  .strategy-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 14px;
+  }
+  .strategy-card {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 8px;
+    padding: 14px 16px;
+  }
+  .strategy-card .s-type {
+    font-size: 0.7rem; letter-spacing: 2px;
+    text-transform: uppercase; opacity: 0.6;
+    margin-bottom: 4px;
+  }
+  .strategy-card .s-title {
+    font-weight: 600; font-size: 0.85rem;
+    margin-bottom: 6px;
+  }
+  .strategy-card .s-items {
+    font-size: 0.78rem; opacity: 0.75;
+    line-height: 1.6;
+  }
+
+  /* ── MULTIMODAL ALERT ── */
+  .multimodal-alert {
+    display: none;
+    background: rgba(200,146,42,0.12);
+    border: 1px solid var(--gold);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    font-size: 0.87rem;
+    color: var(--navy);
+    line-height: 1.55;
+  }
+
+  /* ── RESET BUTTON ── */
+  .reset-wrap { text-align: center; margin-top: 12px; }
+  #reset-btn {
+    padding: 12px 32px;
+    background: transparent;
+    color: var(--navy);
+    border: 2px solid var(--navy);
+    border-radius: 50px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.9rem; font-weight: 600;
+    cursor: pointer; transition: all 0.2s;
+  }
+  #reset-btn:hover {
+    background: var(--navy); color: var(--white);
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center; padding: 24px;
+    font-size: 0.78rem; color: var(--gray-500);
+    border-top: 1px solid var(--gray-300);
+  }
+  footer a { color: var(--teal); text-decoration: none; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    main { padding: 20px 14px 48px; }
+    .question-card { padding: 18px 16px; }
+    .score-bars, .educator-box { padding: 20px 16px; }
+    .dominant-badge { padding: 22px 20px; }
+    .dominant-badge::after { font-size: 6rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="vark-badge">
+      <span class="v">V</span><span class="a">A</span>
+      <span class="r">R</span><span class="k">K</span>
+    </div>
+    <h1>Learning Style Questionnaire</h1>
+    <p>Version 7.8 &nbsp;·&nbsp; Developed by Neil Fleming &nbsp;·&nbsp; 16 Questions</p>
+  </div>
+  <div class="progress-wrap"><div id="progress-bar"></div></div>
+</header>
+
+<main>
+  <!-- QUESTIONNAIRE SECTION -->
+  <div id="questionnaire-section">
+
+    <div class="instruction-card">
+      <div class="icon">📋</div>
+      <div>
+        <h2>How to Complete This Questionnaire</h2>
+        <p>For each question, choose the option(s) that best describes your preference.
+          You may select <strong>more than one answer</strong> if a single option doesn't fully reflect how you learn.
+          Leave any question blank if none of the options apply to you.</p>
+      </div>
+    </div>
+
+    <div class="q-counter" id="q-counter">Questions: 16 &nbsp;·&nbsp; Time: ~5 minutes</div>
+
+    <div id="questions-container"></div>
+
+    <div class="submit-wrap">
+      <button id="submit-btn" disabled onclick="calculateResults()">
+        View My Learning Style →
+      </button>
+      <p class="submit-note">
+        <span id="answer-count">0</span> of 16 questions answered
+      </p>
+    </div>
+  </div>
+
+  <!-- RESULTS SECTION -->
+  <div id="results-section">
+
+    <div class="results-header">
+      <h2>Your VARK Learning Profile</h2>
+      <p>Based on your responses across 16 situational scenarios</p>
+    </div>
+
+    <div id="dominant-badge" class="dominant-badge" data-letter="V">
+      <div class="label">Primary Learning Preference</div>
+      <div class="style-name" id="dominant-name">–</div>
+      <div class="style-sub" id="dominant-sub">–</div>
+    </div>
+
+    <div class="multimodal-alert" id="multimodal-alert">
+      ⚡ <strong>Multimodal Learner:</strong> Your scores are spread across multiple VARK categories,
+      indicating you adapt flexibly to different learning environments.
+      You benefit from varied instructional strategies that combine multiple modalities.
+    </div>
+
+    <div class="score-bars">
+      <h3>Score Breakdown</h3>
+      <div class="bar-row">
+        <div class="bar-meta">
+          <div class="bar-label">
+            <div class="bar-dot" style="background:var(--v-color)"></div>
+            Visual (V)
+          </div>
+          <div class="bar-score" id="score-v">0</div>
+        </div>
+        <div class="bar-track"><div class="bar-fill" id="bar-v" style="background:var(--v-color)"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-meta">
+          <div class="bar-label">
+            <div class="bar-dot" style="background:var(--a-color)"></div>
+            Aural (A)
+          </div>
+          <div class="bar-score" id="score-a">0</div>
+        </div>
+        <div class="bar-track"><div class="bar-fill" id="bar-a" style="background:var(--a-color)"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-meta">
+          <div class="bar-label">
+            <div class="bar-dot" style="background:var(--r-color)"></div>
+            Read/Write (R)
+          </div>
+          <div class="bar-score" id="score-r">0</div>
+        </div>
+        <div class="bar-track"><div class="bar-fill" id="bar-r" style="background:var(--r-color)"></div></div>
+      </div>
+      <div class="bar-row">
+        <div class="bar-meta">
+          <div class="bar-label">
+            <div class="bar-dot" style="background:var(--k-color)"></div>
+            Kinesthetic (K)
+          </div>
+          <div class="bar-score" id="score-k">0</div>
+        </div>
+        <div class="bar-track"><div class="bar-fill" id="bar-k" style="background:var(--k-color)"></div></div>
+      </div>
+    </div>
+
+    <div class="profile-grid" id="profile-grid"></div>
+
+    <div class="educator-box">
+      <h3>🎓 Educator's Strategy Guide</h3>
+      <p class="edu-sub">Recommended instructional design approaches matched to each learning modality present in your class</p>
+      <div class="strategy-grid">
+        <div class="strategy-card">
+          <div class="s-type">V · Visual</div>
+          <div class="s-title">Show, Don't Just Tell</div>
+          <div class="s-items">Concept maps · Flowcharts · Colour-coded notes · Diagrams · Timelines · Video without narration</div>
+        </div>
+        <div class="strategy-card">
+          <div class="s-type">A · Aural</div>
+          <div class="s-title">Discussion-Rich Sessions</div>
+          <div class="s-items">Group debate · Podcasts · Case narration · Question prompts · Peer teaching · Mnemonics</div>
+        </div>
+        <div class="strategy-card">
+          <div class="s-type">R · Read/Write</div>
+          <div class="s-title">Text-Centred Tasks</div>
+          <div class="s-items">Annotated readings · Summary writing · Glossaries · Structured note templates · Essay reflection · Policy analysis</div>
+        </div>
+        <div class="strategy-card">
+          <div class="s-type">K · Kinesthetic</div>
+          <div class="s-title">Hands-On Experience</div>
+          <div class="s-items">Simulation labs · Role play · Case scenarios · Skill stations · Return demonstrations · Clinical placements</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="reset-wrap">
+      <button id="reset-btn" onclick="resetQuiz()">↩ Retake the Questionnaire</button>
+    </div>
+  </div>
+</main>
+
+<footer>
+  <p>VARK Questionnaire v7.8 · © Fleming &amp; Mills, 1992 · Reproduced for educational assessment purposes ·
+  <a href="https://vark-learn.com" target="_blank" rel="noopener">vark-learn.com</a></p>
+</footer>
+
+<script>
+/* ============================================================
+   DATA
+   ============================================================ */
+const QUESTIONS = [
+  {
+    id: 1,
+    text: "You are helping someone who wants to go to your airport, the centre of town or railway station. You would:",
+    options: [
+      { letter: "a", text: "go with her." },
+      { letter: "b", text: "tell her the directions." },
+      { letter: "c", text: "write down the directions." },
+      { letter: "d", text: "draw, or show her a map, or give her a map." }
+    ]
+  },
+  {
+    id: 2,
+    text: "A website has a video showing how to make a special graph. There is a person speaking, some lists and words describing what to do and some diagrams. You would learn most from:",
+    options: [
+      { letter: "a", text: "seeing the diagrams." },
+      { letter: "b", text: "listening." },
+      { letter: "c", text: "reading the words." },
+      { letter: "d", text: "watching the actions." }
+    ]
+  },
+  {
+    id: 3,
+    text: "You are planning a vacation for a group. You want some feedback from them about the plan. You would:",
+    options: [
+      { letter: "a", text: "describe some of the highlights they will experience." },
+      { letter: "b", text: "use a map to show them the places." },
+      { letter: "c", text: "give them a copy of the printed itinerary." },
+      { letter: "d", text: "phone, text or email them." }
+    ]
+  },
+  {
+    id: 4,
+    text: "You are going to cook something as a special treat. You would:",
+    options: [
+      { letter: "a", text: "cook something you know without the need for instructions." },
+      { letter: "b", text: "ask friends for suggestions." },
+      { letter: "c", text: "look on the Internet or in some cookbooks for ideas from the pictures." },
+      { letter: "d", text: "use a good recipe." }
+    ]
+  },
+  {
+    id: 5,
+    text: "A group of tourists want to learn about the parks or wildlife reserves in your area. You would:",
+    options: [
+      { letter: "a", text: "talk about, or arrange a talk for them about parks or wildlife reserves." },
+      { letter: "b", text: "show them maps and internet pictures." },
+      { letter: "c", text: "take them to a park or wildlife reserve and walk with them." },
+      { letter: "d", text: "give them a book or pamphlets about the parks or wildlife reserves." }
+    ]
+  },
+  {
+    id: 6,
+    text: "You are about to purchase a digital camera or mobile phone. Other than price, what would most influence your decision?",
+    options: [
+      { letter: "a", text: "Trying or testing it." },
+      { letter: "b", text: "Reading the details or checking its features online." },
+      { letter: "c", text: "It is a modern design and looks good." },
+      { letter: "d", text: "The salesperson telling me about its features." }
+    ]
+  },
+  {
+    id: 7,
+    text: "Remember a time when you learned how to do something new. Avoid choosing a physical skill, e.g. riding a bike. You learned best by:",
+    options: [
+      { letter: "a", text: "watching a demonstration." },
+      { letter: "b", text: "listening to somebody explaining it and asking questions." },
+      { letter: "c", text: "diagrams, maps, and charts – visual clues." },
+      { letter: "d", text: "written instructions – e.g. a manual or book." }
+    ]
+  },
+  {
+    id: 8,
+    text: "You have a problem with your heart. You would prefer that the doctor:",
+    options: [
+      { letter: "a", text: "gave you something to read to explain what was wrong." },
+      { letter: "b", text: "used a plastic model to show what was wrong." },
+      { letter: "c", text: "described what was wrong." },
+      { letter: "d", text: "showed you a diagram of what was wrong." }
+    ]
+  },
+  {
+    id: 9,
+    text: "You want to learn a new program, skill or game on a computer. You would:",
+    options: [
+      { letter: "a", text: "read the written instructions that came with the program." },
+      { letter: "b", text: "talk with people who know about the program." },
+      { letter: "c", text: "use the controls or keyboard." },
+      { letter: "d", text: "follow the diagrams in the book that came with it." }
+    ]
+  },
+  {
+    id: 10,
+    text: "I like websites that have:",
+    options: [
+      { letter: "a", text: "things I can click on, shift or try." },
+      { letter: "b", text: "interesting design and visual features." },
+      { letter: "c", text: "interesting written descriptions, lists and explanations." },
+      { letter: "d", text: "audio channels where I can hear music, radio programs or interviews." }
+    ]
+  },
+  {
+    id: 11,
+    text: "Other than price, what would most influence your decision to buy a new non-fiction book?",
+    options: [
+      { letter: "a", text: "The way it looks is appealing." },
+      { letter: "b", text: "Quickly reading parts of it." },
+      { letter: "c", text: "A friend talks about it and recommends it." },
+      { letter: "d", text: "It has real-life stories, experiences and examples." }
+    ]
+  },
+  {
+    id: 12,
+    text: "You are using a book, CD or website to learn how to take photos with your new digital camera. You would like to have:",
+    options: [
+      { letter: "a", text: "a chance to ask questions and talk about the camera and its features." },
+      { letter: "b", text: "clear written instructions with lists and bullet points about what to do." },
+      { letter: "c", text: "diagrams showing the camera and what each part does." },
+      { letter: "d", text: "many examples of good and poor photos and how to improve them." }
+    ]
+  },
+  {
+    id: 13,
+    text: "Do you prefer a teacher or a presenter who uses:",
+    options: [
+      { letter: "a", text: "demonstrations, models or practical sessions." },
+      { letter: "b", text: "question and answer, talk, group discussion, or guest speakers." },
+      { letter: "c", text: "handouts, books, or readings." },
+      { letter: "d", text: "diagrams, charts or graphs." }
+    ]
+  },
+  {
+    id: 14,
+    text: "You have finished a competition or test and would like some feedback. You would like to have feedback:",
+    options: [
+      { letter: "a", text: "using examples from what you have done." },
+      { letter: "b", text: "using a written description of your results." },
+      { letter: "c", text: "from somebody who talks it through with you." },
+      { letter: "d", text: "using graphs showing what you had achieved." }
+    ]
+  },
+  {
+    id: 15,
+    text: "You are going to choose food at a restaurant or café. You would:",
+    options: [
+      { letter: "a", text: "choose something that you have had there before." },
+      { letter: "b", text: "listen to the waiter or ask friends to recommend choices." },
+      { letter: "c", text: "choose from the descriptions in the menu." },
+      { letter: "d", text: "look at what others are eating or look at pictures of each dish." }
+    ]
+  },
+  {
+    id: 16,
+    text: "You have to make an important speech at a conference or special occasion. You would:",
+    options: [
+      { letter: "a", text: "make diagrams or get graphs to help explain things." },
+      { letter: "b", text: "write a few key words and practise saying your speech over and over." },
+      { letter: "c", text: "write out your speech and learn from reading it over several times." },
+      { letter: "d", text: "gather many examples and stories to make the talk real and practical." }
+    ]
+  }
+];
+
+/* Scoring map: question → { a:VARK, b:VARK, c:VARK, d:VARK } */
+const SCORE_MAP = {
+  1:  { a:'K', b:'A', c:'R', d:'V' },
+  2:  { a:'V', b:'A', c:'R', d:'K' },
+  3:  { a:'K', b:'V', c:'R', d:'A' },
+  4:  { a:'K', b:'A', c:'V', d:'R' },
+  5:  { a:'A', b:'V', c:'K', d:'R' },
+  6:  { a:'K', b:'R', c:'V', d:'A' },
+  7:  { a:'K', b:'A', c:'V', d:'R' },
+  8:  { a:'R', b:'K', c:'A', d:'V' },
+  9:  { a:'R', b:'A', c:'K', d:'V' },
+  10: { a:'K', b:'V', c:'R', d:'A' },
+  11: { a:'V', b:'R', c:'A', d:'K' },
+  12: { a:'A', b:'R', c:'V', d:'K' },
+  13: { a:'K', b:'A', c:'R', d:'V' },
+  14: { a:'K', b:'R', c:'A', d:'V' },
+  15: { a:'K', b:'A', c:'R', d:'V' },
+  16: { a:'V', b:'A', c:'R', d:'K' }
+};
+
+const PROFILES = {
+  V: {
+    name: "Visual",
+    full: "Visual Learner",
+    icon: "👁️",
+    color: "var(--v-color)",
+    bg: "rgba(37,99,235,0.08)",
+    desc: "You prefer information presented in charts, graphs, maps, diagrams, and spatial arrangements. You think in pictures and learn best when data is laid out visually, allowing you to see patterns and relationships at a glance.",
+    tips: [
+      "Use colour-coded highlights and mind maps",
+      "Draw diagrams before studying text",
+      "Prefer flowcharts over written procedures",
+      "Seek out infographics and visual summaries",
+      "Convert lecture notes into concept maps"
+    ]
+  },
+  A: {
+    name: "Aural",
+    full: "Aural / Auditory Learner",
+    icon: "🎧",
+    color: "var(--a-color)",
+    bg: "rgba(5,150,105,0.08)",
+    desc: "You retain information best when it's spoken, discussed, or heard. Lectures, group discussions, podcasts, and explaining concepts aloud are powerful tools for you. You may find yourself talking through problems to reach solutions.",
+    tips: [
+      "Record lectures and replay key sections",
+      "Participate actively in group discussions",
+      "Explain topics aloud to yourself or peers",
+      "Use mnemonics, rhymes, and verbal patterns",
+      "Attend seminars and case presentation sessions"
+    ]
+  },
+  R: {
+    name: "Read/Write",
+    full: "Read/Write Learner",
+    icon: "📝",
+    color: "var(--r-color)",
+    bg: "rgba(124,58,237,0.08)",
+    desc: "You excel when information is delivered through text — reading articles, writing notes, making lists, and structuring arguments. You thrive with written instructions, annotated readings, and essay-based assessments.",
+    tips: [
+      "Rewrite lecture notes in your own words",
+      "Build glossaries of key terms and definitions",
+      "Prefer written feedback over verbal",
+      "Use structured note-taking frameworks (Cornell, SQ3R)",
+      "Summarise diagrams into text descriptions"
+    ]
+  },
+  K: {
+    name: "Kinesthetic",
+    full: "Kinesthetic Learner",
+    icon: "🤲",
+    color: "var(--k-color)",
+    bg: "rgba(220,38,38,0.08)",
+    desc: "You learn by doing and through concrete experience. Simulations, practical placements, case studies with real examples, and hands-on activities are your preferred route to mastery. Theory is best absorbed when linked to practice.",
+    tips: [
+      "Seek clinical placement and simulation labs",
+      "Use real-life case scenarios to anchor theory",
+      "Practice skills repeatedly with feedback",
+      "Role-play clinical conversations and handovers",
+      "Connect all concepts to past personal experience"
+    ]
+  }
+};
+
+/* ============================================================
+   BUILD QUESTIONS
+   ============================================================ */
+const container = document.getElementById('questions-container');
+let answeredCount = 0;
+
+QUESTIONS.forEach(q => {
+  const card = document.createElement('div');
+  card.className = 'question-card';
+  card.innerHTML = `
+    <div style="display:flex;gap:14px;align-items:flex-start;">
+      <div class="q-number">${q.id}</div>
+      <div style="flex:1">
+        <p class="q-text">${q.text}</p>
+        <div class="options" id="opts-${q.id}">
+          ${q.options.map(o => `
+            <label class="option-label" id="lbl-${q.id}-${o.letter}">
+              <input type="checkbox"
+                value="${o.letter}"
+                data-qid="${q.id}"
+                onchange="handleChange(this)"
+              />
+              <span class="opt-key">${o.letter.toUpperCase()}</span>
+              <span>${o.text}</span>
+            </label>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+  `;
+  container.appendChild(card);
+});
+
+function handleChange(cb) {
+  const lbl = cb.closest('label');
+  if (cb.checked) {
+    lbl.classList.add('checked');
+  } else {
+    lbl.classList.remove('checked');
+  }
+  updateProgress();
+}
+
+function updateProgress() {
+  let answered = 0;
+  QUESTIONS.forEach(q => {
+    const checks = document.querySelectorAll(`input[data-qid="${q.id}"]:checked`);
+    if (checks.length > 0) answered++;
+  });
+  answeredCount = answered;
+  document.getElementById('answer-count').textContent = answered;
+  document.getElementById('submit-btn').disabled = (answered < 16);
+  const pct = Math.round((answered / 16) * 100);
+  document.getElementById('progress-bar').style.width = pct + '%';
+}
+
+/* ============================================================
+   CALCULATE RESULTS
+   ============================================================ */
+function calculateResults() {
+  const scores = { V: 0, A: 0, R: 0, K: 0 };
+
+  QUESTIONS.forEach(q => {
+    const checks = document.querySelectorAll(`input[data-qid="${q.id}"]:checked`);
+    checks.forEach(cb => {
+      const letter = cb.value;
+      const cat = SCORE_MAP[q.id][letter];
+      scores[cat]++;
+    });
+  });
+
+  const total = scores.V + scores.A + scores.R + scores.K;
+  const max = Math.max(...Object.values(scores));
+  const dominants = Object.keys(scores).filter(k => scores[k] === max);
+  const isMultimodal = dominants.length > 1 ||
+    (Object.values(scores).filter(v => v >= max - 2 && v >= 3).length >= 3);
+
+  // Update score display
+  ['V','A','R','K'].forEach(k => {
+    document.getElementById(`score-${k.toLowerCase()}`).textContent = scores[k];
+    const pct = total > 0 ? (scores[k] / total) * 100 : 0;
+    setTimeout(() => {
+      document.getElementById(`bar-${k.toLowerCase()}`).style.width = pct + '%';
+    }, 200);
+  });
+
+  // Dominant badge
+  const primary = dominants[0];
+  const badge = document.getElementById('dominant-badge');
+  badge.setAttribute('data-letter', primary);
+  badge.style.background = `linear-gradient(135deg, ${PROFILES[primary].color}cc, var(--navy))`;
+  document.getElementById('dominant-name').textContent = PROFILES[primary].full;
+  document.getElementById('dominant-sub').textContent =
+    isMultimodal ? `Multimodal Preference (${dominants.join(', ')} equally dominant)` :
+    `Score: ${scores[primary]} / ${total} responses`;
+
+  if (isMultimodal) {
+    document.getElementById('multimodal-alert').style.display = 'block';
+  }
+
+  // Profile cards – sorted by score descending
+  const sorted = ['V','A','R','K'].sort((a,b) => scores[b] - scores[a]);
+  const grid = document.getElementById('profile-grid');
+  grid.innerHTML = '';
+  sorted.forEach(k => {
+    if (scores[k] === 0) return;
+    const p = PROFILES[k];
+    const card = document.createElement('div');
+    card.className = 'profile-card';
+    card.style.borderTopColor = p.color;
+    card.style.background = p.bg;
+    card.innerHTML = `
+      <div class="pc-score-chip" style="color:${p.color}">${scores[k]}pt</div>
+      <div class="pc-header">
+        <div class="pc-icon" style="background:${p.color}1a">${p.icon}</div>
+        <div>
+          <div class="pc-title">${p.full}</div>
+          <div class="pc-sub" style="color:${p.color}">${p.name} · ${scores[k]} response${scores[k]!==1?'s':''}</div>
+        </div>
+      </div>
+      <p class="pc-desc">${p.desc}</p>
+      <div class="pc-tag">📌 Study Strategies</div>
+      <ul class="pc-tips">
+        ${p.tips.map(t => `<li>${t}</li>`).join('')}
+      </ul>
+    `;
+    grid.appendChild(card);
+  });
+
+  // Switch sections
+  document.getElementById('questionnaire-section').style.display = 'none';
+  const rs = document.getElementById('results-section');
+  rs.style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+  document.getElementById('progress-bar').style.width = '100%';
+}
+
+/* ============================================================
+   RESET
+   ============================================================ */
+function resetQuiz() {
+  document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+    cb.checked = false;
+    cb.closest('label').classList.remove('checked');
+  });
+  answeredCount = 0;
+  document.getElementById('answer-count').textContent = '0';
+  document.getElementById('submit-btn').disabled = true;
+  document.getElementById('progress-bar').style.width = '0%';
+  document.getElementById('multimodal-alert').style.display = 'none';
+  document.getElementById('results-section').style.display = 'none';
+  document.getElementById('questionnaire-section').style.display = 'block';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
