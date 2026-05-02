@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>VARK Class Dashboard — Educator View</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0f2342; --teal: #1a6b6b; --gold: #c8922a;
+    --cream: #f9f5ef; --white: #ffffff;
+    --gray-100: #f3f4f6; --gray-200: #e5e7eb;
+    --gray-300: #d1d5db; --gray-500: #6b7280; --gray-700: #374151;
+    --v-color: #2563eb; --a-color: #059669; --r-color: #7c3aed; --k-color: #dc2626;
+    --radius: 12px;
+    --shadow: 0 4px 24px rgba(15,35,66,0.10);
+    --shadow-lg: 0 8px 48px rgba(15,35,66,0.16);
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cream); color: var(--navy); min-height: 100vh; }
+
+  /* LOGIN */
+  #login-screen {
+    min-height: 100vh; display: flex; align-items: center; justify-content: center;
+    background: var(--navy); flex-direction: column; gap: 20px;
+  }
+  .login-box {
+    background: var(--white); border-radius: 16px;
+    padding: 40px 48px; text-align: center;
+    box-shadow: var(--shadow-lg); min-width: 340px;
+  }
+  .login-box .vark-badge { display: inline-flex; gap: 2px; margin-bottom: 20px; border: 2px solid var(--gold); border-radius: 8px; overflow: hidden; }
+  .login-box .vark-badge span { padding: 5px 12px; font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 700; color: var(--white); }
+  .login-box .vark-badge .v { background: rgba(37,99,235,0.8); }
+  .login-box .vark-badge .a { background: rgba(5,150,105,0.8); }
+  .login-box .vark-badge .r { background: rgba(124,58,237,0.8); }
+  .login-box .vark-badge .k { background: rgba(220,38,38,0.8); }
+  .login-box h2 { font-family: 'Playfair Display', serif; color: var(--navy); margin-bottom: 4px; }
+  .login-box p { font-size: 0.85rem; color: var(--gray-500); margin-bottom: 24px; }
+  .login-box input {
+    width: 100%; padding: 12px 16px; border: 2px solid var(--gray-300);
+    border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 0.95rem;
+    margin-bottom: 12px; outline: none; transition: border-color 0.2s;
+  }
+  .login-box input:focus { border-color: var(--teal); }
+  .login-box button {
+    width: 100%; padding: 13px; background: linear-gradient(135deg, var(--navy), var(--teal));
+    color: var(--white); border: none; border-radius: 8px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 600;
+    cursor: pointer; transition: opacity 0.2s;
+  }
+  .login-box button:hover { opacity: 0.9; }
+  .login-error { color: var(--k-color); font-size: 0.82rem; margin-top: 8px; display: none; }
+
+  /* DASHBOARD */
+  #dashboard { display: none; }
+
+  header {
+    background: var(--navy); padding: 0;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 2px 20px rgba(0,0,0,0.3);
+  }
+  .header-bar {
+    max-width: 1200px; margin: 0 auto;
+    padding: 16px 24px;
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .header-bar .logo { display: flex; align-items: center; gap: 14px; }
+  .header-bar .logo-text h1 { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: var(--white); }
+  .header-bar .logo-text p { font-size: 0.75rem; color: rgba(255,255,255,0.5); }
+  .mini-badge { display: inline-flex; gap: 1px; border: 1.5px solid var(--gold); border-radius: 6px; overflow: hidden; }
+  .mini-badge span { padding: 3px 8px; font-family: 'Playfair Display', serif; font-size: 0.85rem; font-weight: 700; color: var(--white); }
+  .mini-badge .v { background: rgba(37,99,235,0.4); }
+  .mini-badge .a { background: rgba(5,150,105,0.4); }
+  .mini-badge .r { background: rgba(124,58,237,0.4); }
+  .mini-badge .k { background: rgba(220,38,38,0.4); }
+  .header-actions { display: flex; align-items: center; gap: 10px; }
+  .refresh-btn {
+    padding: 8px 18px; background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.2); border-radius: 8px;
+    color: var(--white); font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem; font-weight: 500; cursor: pointer; transition: all 0.2s;
+  }
+  .refresh-btn:hover { background: rgba(255,255,255,0.2); }
+  .last-update { font-size: 0.75rem; color: rgba(255,255,255,0.4); }
+
+  main { max-width: 1200px; margin: 0 auto; padding: 28px 20px 60px; }
+
+  /* KPI STRIP */
+  .kpi-strip { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; margin-bottom: 28px; }
+  .kpi-card { background: var(--white); border-radius: var(--radius); padding: 18px 20px; box-shadow: var(--shadow); border-top: 3px solid; }
+  .kpi-card .kpi-label { font-size: 0.72rem; font-weight: 600; color: var(--gray-500); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 6px; }
+  .kpi-card .kpi-value { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 700; line-height: 1; }
+  .kpi-card .kpi-sub { font-size: 0.75rem; color: var(--gray-500); margin-top: 4px; }
+
+  /* TWO-COL LAYOUT */
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+  @media (max-width: 768px) { .two-col { grid-template-columns: 1fr; } }
+
+  /* CHART CARD */
+  .chart-card { background: var(--white); border-radius: var(--radius); padding: 22px 24px; box-shadow: var(--shadow); }
+  .chart-card h3 { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--navy); margin-bottom: 18px; }
+
+  /* DONUT CHART */
+  .donut-wrap { position: relative; display: flex; align-items: center; justify-content: center; }
+  svg.donut { transform: rotate(-90deg); }
+  .donut-legend { margin-left: 24px; display: flex; flex-direction: column; gap: 10px; }
+  .legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; }
+  .legend-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+  .legend-pct { margin-left: auto; font-weight: 700; font-size: 0.9rem; padding-left: 12px; }
+  .donut-center { position: absolute; text-align: center; pointer-events: none; }
+  .donut-center .dc-val { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 700; color: var(--navy); line-height: 1; }
+  .donut-center .dc-label { font-size: 0.72rem; color: var(--gray-500); }
+
+  /* AVG BARS */
+  .avg-bars { display: flex; flex-direction: column; gap: 14px; }
+  .avg-row .avg-meta { display: flex; justify-content: space-between; margin-bottom: 5px; font-size: 0.85rem; }
+  .avg-row .avg-name { font-weight: 500; }
+  .avg-row .avg-val { font-weight: 700; }
+  .avg-track { height: 12px; background: var(--gray-100); border-radius: 99px; overflow: hidden; }
+  .avg-fill { height: 100%; border-radius: 99px; transition: width 1s cubic-bezier(0.34,1.56,0.64,1); }
+
+  /* DEPT BREAKDOWN */
+  .dept-card { background: var(--white); border-radius: var(--radius); padding: 22px 24px; box-shadow: var(--shadow); margin-bottom: 24px; }
+  .dept-card h3 { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--navy); margin-bottom: 18px; }
+  .dept-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+  .dept-table th { text-align: left; padding: 8px 12px; background: var(--gray-100); color: var(--gray-500); font-weight: 600; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.8px; }
+  .dept-table td { padding: 10px 12px; border-bottom: 1px solid var(--gray-100); }
+  .dept-table tr:last-child td { border-bottom: none; }
+  .style-chip { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 99px; font-size: 0.75rem; font-weight: 700; color: var(--white); }
+
+  /* STUDENT TABLE */
+  .table-card { background: var(--white); border-radius: var(--radius); padding: 22px 24px; box-shadow: var(--shadow); }
+  .table-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
+  .table-header h3 { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--navy); }
+  .filter-row { display: flex; gap: 8px; flex-wrap: wrap; }
+  .filter-select {
+    padding: 7px 12px; border: 1.5px solid var(--gray-300);
+    border-radius: 8px; font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem; color: var(--navy); outline: none;
+    background: var(--white); cursor: pointer; transition: border-color 0.18s;
+  }
+  .filter-select:focus { border-color: var(--teal); }
+  .search-input {
+    padding: 7px 12px; border: 1.5px solid var(--gray-300);
+    border-radius: 8px; font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem; color: var(--navy); outline: none; width: 200px;
+  }
+  .search-input:focus { border-color: var(--teal); }
+
+  .student-table { width: 100%; border-collapse: collapse; font-size: 0.83rem; }
+  .student-table th { text-align: left; padding: 10px 12px; background: var(--gray-100); color: var(--gray-500); font-weight: 600; font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.8px; cursor: pointer; user-select: none; white-space: nowrap; }
+  .student-table th:hover { background: var(--gray-200); color: var(--navy); }
+  .student-table td { padding: 11px 12px; border-bottom: 1px solid var(--gray-100); vertical-align: middle; }
+  .student-table tr:last-child td { border-bottom: none; }
+  .student-table tr:hover td { background: rgba(26,107,107,0.03); }
+  .score-pills { display: flex; gap: 4px; flex-wrap: nowrap; }
+  .score-pill { padding: 2px 8px; border-radius: 99px; font-size: 0.72rem; font-weight: 700; color: var(--white); }
+  .export-btn {
+    padding: 8px 16px; background: var(--teal); color: var(--white);
+    border: none; border-radius: 8px; font-family: 'DM Sans', sans-serif;
+    font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: background 0.2s;
+  }
+  .export-btn:hover { background: var(--navy); }
+
+  /* LOADING / EMPTY */
+  .loading-state { text-align: center; padding: 48px; color: var(--gray-500); }
+  .loading-spinner { width: 36px; height: 36px; border: 3px solid var(--gray-200); border-top-color: var(--teal); border-radius: 50%; animation: spin 0.8s linear infinite; margin: 0 auto 14px; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .empty-state { text-align: center; padding: 48px; color: var(--gray-500); font-size: 0.9rem; }
+
+  footer { text-align: center; padding: 20px; font-size: 0.75rem; color: var(--gray-500); border-top: 1px solid var(--gray-300); }
+  footer a { color: var(--teal); }
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div id="login-screen">
+  <div class="login-box">
+    <div class="vark-badge">
+      <span class="v">V</span><span class="a">A</span><span class="r">R</span><span class="k">K</span>
+    </div>
+    <h2>Educator Dashboard</h2>
+    <p>Enter the dashboard password to view class results</p>
+    <input type="password" id="pw-input" placeholder="Dashboard password" onkeydown="if(event.key==='Enter')login()" />
+    <button onclick="login()">Access Dashboard</button>
+    <p class="login-error" id="login-error">Incorrect password. Please try again.</p>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+  <header>
+    <div class="header-bar">
+      <div class="logo">
+        <div class="mini-badge">
+          <span class="v">V</span><span class="a">A</span><span class="r">R</span><span class="k">K</span>
+        </div>
+        <div class="logo-text">
+          <h1>Class Learning Profile Dashboard</h1>
+          <p>Educator View · Nizwa Hospital CPD Programme</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <span class="last-update" id="last-update">–</span>
+        <button class="refresh-btn" onclick="loadData()">⟳ Refresh</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div id="loading-overlay" class="loading-state">
+      <div class="loading-spinner"></div>
+      <p>Loading class results…</p>
+    </div>
+
+    <div id="content" style="display:none">
+      <!-- KPIs -->
+      <div class="kpi-strip">
+        <div class="kpi-card" style="border-top-color:var(--teal)">
+          <div class="kpi-label">Total Responses</div>
+          <div class="kpi-value" id="kpi-total">0</div>
+          <div class="kpi-sub">Students assessed</div>
+        </div>
+        <div class="kpi-card" style="border-top-color:var(--v-color)">
+          <div class="kpi-label">Dominant: Visual</div>
+          <div class="kpi-value" id="kpi-v" style="color:var(--v-color)">0</div>
+          <div class="kpi-sub" id="kpi-v-pct">–</div>
+        </div>
+        <div class="kpi-card" style="border-top-color:var(--a-color)">
+          <div class="kpi-label">Dominant: Aural</div>
+          <div class="kpi-value" id="kpi-a" style="color:var(--a-color)">0</div>
+          <div class="kpi-sub" id="kpi-a-pct">–</div>
+        </div>
+        <div class="kpi-card" style="border-top-color:var(--r-color)">
+          <div class="kpi-label">Dominant: Read/Write</div>
+          <div class="kpi-value" id="kpi-r" style="color:var(--r-color)">0</div>
+          <div class="kpi-sub" id="kpi-r-pct">–</div>
+        </div>
+        <div class="kpi-card" style="border-top-color:var(--k-color)">
+          <div class="kpi-label">Dominant: Kinesthetic</div>
+          <div class="kpi-value" id="kpi-k" style="color:var(--k-color)">0</div>
+          <div class="kpi-sub" id="kpi-k-pct">–</div>
+        </div>
+        <div class="kpi-card" style="border-top-color:var(--gold)">
+          <div class="kpi-label">Multimodal</div>
+          <div class="kpi-value" id="kpi-mm" style="color:var(--gold)">0</div>
+          <div class="kpi-sub">Mixed dominant styles</div>
+        </div>
+      </div>
+
+      <!-- CHARTS ROW -->
+      <div class="two-col">
+        <!-- DONUT -->
+        <div class="chart-card">
+          <h3>Dominant Style Distribution</h3>
+          <div class="donut-wrap">
+            <svg class="donut" width="160" height="160" viewBox="0 0 160 160" id="donut-svg">
+              <circle cx="80" cy="80" r="60" fill="none" stroke="#f3f4f6" stroke-width="22"/>
+            </svg>
+            <div class="donut-center">
+              <div class="dc-val" id="donut-center-val">–</div>
+              <div class="dc-label">total</div>
+            </div>
+            <div class="donut-legend" id="donut-legend"></div>
+          </div>
+        </div>
+        <!-- AVG BARS -->
+        <div class="chart-card">
+          <h3>Average Score per Modality</h3>
+          <div class="avg-bars">
+            <div class="avg-row">
+              <div class="avg-meta"><span class="avg-name">👁️ Visual (V)</span><span class="avg-val" id="avg-v">–</span></div>
+              <div class="avg-track"><div class="avg-fill" id="avgbar-v" style="background:var(--v-color);width:0%"></div></div>
+            </div>
+            <div class="avg-row">
+              <div class="avg-meta"><span class="avg-name">🎧 Aural (A)</span><span class="avg-val" id="avg-a">–</span></div>
+              <div class="avg-track"><div class="avg-fill" id="avgbar-a" style="background:var(--a-color);width:0%"></div></div>
+            </div>
+            <div class="avg-row">
+              <div class="avg-meta"><span class="avg-name">📝 Read/Write (R)</span><span class="avg-val" id="avg-r">–</span></div>
+              <div class="avg-track"><div class="avg-fill" id="avgbar-r" style="background:var(--r-color);width:0%"></div></div>
+            </div>
+            <div class="avg-row">
+              <div class="avg-meta"><span class="avg-name">🤲 Kinesthetic (K)</span><span class="avg-val" id="avg-k">–</span></div>
+              <div class="avg-track"><div class="avg-fill" id="avgbar-k" style="background:var(--k-color);width:0%"></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DEPT BREAKDOWN -->
+      <div class="dept-card">
+        <h3>Department Breakdown</h3>
+        <div style="overflow-x:auto">
+          <table class="dept-table">
+            <thead>
+              <tr>
+                <th>Department / Unit</th>
+                <th>Participants</th>
+                <th>Avg V</th><th>Avg A</th><th>Avg R</th><th>Avg K</th>
+                <th>Most Common Style</th>
+              </tr>
+            </thead>
+            <tbody id="dept-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- STUDENT TABLE -->
+      <div class="table-card">
+        <div class="table-header">
+          <h3>Individual Results</h3>
+          <div class="filter-row">
+            <input class="search-input" id="search-input" placeholder="Search name / ID…" oninput="renderTable()" />
+            <select class="filter-select" id="filter-dept" onchange="renderTable()">
+              <option value="">All Departments</option>
+            </select>
+            <select class="filter-select" id="filter-style" onchange="renderTable()">
+              <option value="">All Styles</option>
+              <option value="V">Visual</option>
+              <option value="A">Aural</option>
+              <option value="R">Read/Write</option>
+              <option value="K">Kinesthetic</option>
+            </select>
+            <button class="export-btn" onclick="exportCSV()">⬇ Export CSV</button>
+          </div>
+        </div>
+        <div style="overflow-x:auto">
+          <table class="student-table">
+            <thead>
+              <tr>
+                <th onclick="sortTable('name')" title="Sort">Name ↕</th>
+                <th onclick="sortTable('staffId')" title="Sort">ID ↕</th>
+                <th onclick="sortTable('department')" title="Sort">Department ↕</th>
+                <th>Role</th>
+                <th onclick="sortTable('V')" style="color:var(--v-color)">V ↕</th>
+                <th onclick="sortTable('A')" style="color:var(--a-color)">A ↕</th>
+                <th onclick="sortTable('R')" style="color:var(--r-color)">R ↕</th>
+                <th onclick="sortTable('K')" style="color:var(--k-color)">K ↕</th>
+                <th>Dominant</th>
+                <th onclick="sortTable('timestamp')" title="Sort">Date ↕</th>
+              </tr>
+            </thead>
+            <tbody id="student-tbody"></tbody>
+          </table>
+        </div>
+        <p style="margin-top:10px;font-size:0.78rem;color:var(--gray-500)" id="table-count">–</p>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    <p>VARK Educator Dashboard · Nizwa Hospital CPD · <a href="index.html">← Back to Questionnaire</a></p>
+  </footer>
+</div>
+
+<script>
+/* ─── CONFIGURATION ─────────────────────────────────────── */
+// REPLACE with your Apps Script Web App URL (same as in index.html)
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/YOUR_DEPLOYMENT_ID/exec";
+
+const STYLE_COLORS  = { V:"#2563eb", A:"#059669", R:"#7c3aed", K:"#dc2626" };
+const STYLE_NAMES   = { V:"Visual", A:"Aural", R:"Read/Write", K:"Kinesthetic" };
+
+let allData   = [];
+let sortKey   = "timestamp";
+let sortAsc   = false;
+let pw        = "";
+
+/* ─── LOGIN ─────────────────────────────────────────────── */
+function login() {
+  pw = document.getElementById('pw-input').value.trim();
+  if (!pw) return;
+  document.getElementById('login-error').style.display = 'none';
+  loadData();
+}
+
+/* ─── LOAD DATA ─────────────────────────────────────────── */
+async function loadData() {
+  document.getElementById('loading-overlay').style.display = 'block';
+  document.getElementById('content').style.display        = 'none';
+
+  try {
+    const url = `${APPS_SCRIPT_URL}?pw=${encodeURIComponent(pw)}&t=${Date.now()}`;
+    const res  = await fetch(url);
+    const json = await res.json();
+
+    if (json.status === 'unauthorized') {
+      document.getElementById('login-screen').style.display = 'flex';
+      document.getElementById('dashboard').style.display    = 'none';
+      document.getElementById('login-error').style.display  = 'block';
+      return;
+    }
+
+    allData = json.data || [];
+    document.getElementById('login-screen').style.display = 'none';
+    document.getElementById('dashboard').style.display    = 'block';
+    document.getElementById('last-update').textContent    = 'Updated ' + new Date().toLocaleTimeString();
+
+    renderAll();
+    document.getElementById('loading-overlay').style.display = 'none';
+    document.getElementById('content').style.display        = 'block';
+
+  } catch (err) {
+    document.getElementById('loading-overlay').innerHTML =
+      `<p style="color:#dc2626">⚠ Failed to load data. Check your Apps Script URL and try again.<br><small>${err}</small></p>`;
+  }
+}
+
+/* ─── RENDER ALL ─────────────────────────────────────────── */
+function renderAll() {
+  renderKPIs();
+  renderDonut();
+  renderAvgBars();
+  renderDeptTable();
+  populateDeptFilter();
+  renderTable();
+}
+
+/* ─── KPIs ───────────────────────────────────────────────── */
+function renderKPIs() {
+  const n = allData.length;
+  const counts = { V:0, A:0, R:0, K:0, MM:0 };
+  allData.forEach(d => {
+    if (d.dominant.includes('/')) counts.MM++;
+    else counts[d.dominant] = (counts[d.dominant] || 0) + 1;
+  });
+  document.getElementById('kpi-total').textContent = n;
+  ['V','A','R','K'].forEach(k => {
+    document.getElementById(`kpi-${k.toLowerCase()}`).textContent = counts[k] || 0;
+    document.getElementById(`kpi-${k.toLowerCase()}-pct`).textContent =
+      n > 0 ? Math.round(((counts[k]||0)/n)*100) + '% of class' : '–';
+  });
+  document.getElementById('kpi-mm').textContent = counts.MM;
+}
+
+/* ─── DONUT ──────────────────────────────────────────────── */
+function renderDonut() {
+  const n = allData.length;
+  document.getElementById('donut-center-val').textContent = n;
+  const counts = { V:0, A:0, R:0, K:0 };
+  allData.forEach(d => {
+    const dom = d.dominant.split('/')[0];
+    if (counts[dom] !== undefined) counts[dom]++;
+  });
+  const R  = 60, C = 2 * Math.PI * R;
+  const svg = document.getElementById('donut-svg');
+  // Remove old segments
+  svg.querySelectorAll('.seg').forEach(el => el.remove());
+  let offset = 0;
+  const legend = document.getElementById('donut-legend');
+  legend.innerHTML = '';
+  Object.keys(counts).forEach(k => {
+    const pct  = n > 0 ? counts[k] / n : 0;
+    const dash = pct * C;
+    if (dash > 0) {
+      const circle = document.createElementNS("http://www.w3.org/2000/svg","circle");
+      circle.setAttribute("cx","80"); circle.setAttribute("cy","80");
+      circle.setAttribute("r",String(R)); circle.setAttribute("fill","none");
+      circle.setAttribute("stroke", STYLE_COLORS[k]);
+      circle.setAttribute("stroke-width","22");
+      circle.setAttribute("stroke-dasharray", `${dash} ${C - dash}`);
+      circle.setAttribute("stroke-dashoffset", String(-offset));
+      circle.classList.add("seg");
+      svg.appendChild(circle);
+      offset += dash;
+    }
+    legend.innerHTML += `
+      <div class="legend-item">
+        <div class="legend-dot" style="background:${STYLE_COLORS[k]}"></div>
+        <span>${STYLE_NAMES[k]}</span>
+        <span class="legend-pct" style="color:${STYLE_COLORS[k]}">${n>0?Math.round(pct*100):0}%</span>
+      </div>`;
+  });
+}
+
+/* ─── AVG BARS ───────────────────────────────────────────── */
+function renderAvgBars() {
+  const n = allData.length;
+  if (n === 0) return;
+  const avgs = { V:0, A:0, R:0, K:0 };
+  allData.forEach(d => { ['V','A','R','K'].forEach(k => { avgs[k] += d[k]; }); });
+  const maxAvg = Math.max(...Object.values(avgs).map(v => v/n));
+  ['V','A','R','K'].forEach(k => {
+    const avg = (avgs[k]/n).toFixed(1);
+    document.getElementById(`avg-${k.toLowerCase()}`).textContent = avg;
+    setTimeout(() => {
+      document.getElementById(`avgbar-${k.toLowerCase()}`).style.width =
+        maxAvg > 0 ? (avgs[k]/n/maxAvg*100) + '%' : '0%';
+    }, 300);
+  });
+}
+
+/* ─── DEPT TABLE ─────────────────────────────────────────── */
+function renderDeptTable() {
+  const depts = {};
+  allData.forEach(d => {
+    const dept = d.department || "Unspecified";
+    if (!depts[dept]) depts[dept] = { count:0, V:0,A:0,R:0,K:0, styles:{} };
+    depts[dept].count++;
+    ['V','A','R','K'].forEach(k => { depts[dept][k] += d[k]; });
+    const dom = d.dominant.split('/')[0];
+    depts[dept].styles[dom] = (depts[dept].styles[dom] || 0) + 1;
+  });
+  const tbody = document.getElementById('dept-tbody');
+  tbody.innerHTML = '';
+  Object.entries(depts).sort((a,b) => b[1].count - a[1].count).forEach(([dept, v]) => {
+    const dominant = Object.entries(v.styles).sort((a,b)=>b[1]-a[1])[0][0];
+    tbody.innerHTML += `
+      <tr>
+        <td><strong>${dept}</strong></td>
+        <td>${v.count}</td>
+        <td>${(v.V/v.count).toFixed(1)}</td>
+        <td>${(v.A/v.count).toFixed(1)}</td>
+        <td>${(v.R/v.count).toFixed(1)}</td>
+        <td>${(v.K/v.count).toFixed(1)}</td>
+        <td><span class="style-chip" style="background:${STYLE_COLORS[dominant]}">${dominant} · ${STYLE_NAMES[dominant]}</span></td>
+      </tr>`;
+  });
+  if (!tbody.innerHTML) tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:#6b7280;padding:20px">No data yet</td></tr>';
+}
+
+/* ─── DEPT FILTER ────────────────────────────────────────── */
+function populateDeptFilter() {
+  const depts = [...new Set(allData.map(d => d.department).filter(Boolean))].sort();
+  const sel = document.getElementById('filter-dept');
+  sel.innerHTML = '<option value="">All Departments</option>';
+  depts.forEach(d => { sel.innerHTML += `<option value="${d}">${d}</option>`; });
+}
+
+/* ─── STUDENT TABLE ──────────────────────────────────────── */
+function renderTable() {
+  const search = document.getElementById('search-input').value.toLowerCase();
+  const dept   = document.getElementById('filter-dept').value;
+  const style  = document.getElementById('filter-style').value;
+
+  let filtered = allData.filter(d => {
+    const matchSearch = !search || d.name.toLowerCase().includes(search) || d.staffId.toLowerCase().includes(search);
+    const matchDept   = !dept   || d.department === dept;
+    const matchStyle  = !style  || d.dominant.includes(style);
+    return matchSearch && matchDept && matchStyle;
+  });
+
+  filtered.sort((a,b) => {
+    let va = a[sortKey], vb = b[sortKey];
+    if (typeof va === 'string') va = va.toLowerCase();
+    if (typeof vb === 'string') vb = vb.toLowerCase();
+    return sortAsc ? (va > vb ? 1 : -1) : (va < vb ? 1 : -1);
+  });
+
+  const tbody = document.getElementById('student-tbody');
+  tbody.innerHTML = '';
+
+  if (filtered.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;color:#6b7280;padding:24px">No matching records found</td></tr>';
+  } else {
+    filtered.forEach(d => {
+      const dom = d.dominant.split('/')[0];
+      const date = d.timestamp ? new Date(d.timestamp).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'}) : '–';
+      tbody.innerHTML += `
+        <tr>
+          <td><strong>${d.name || '–'}</strong></td>
+          <td style="color:var(--gray-500)">${d.staffId || '–'}</td>
+          <td>${d.department || '–'}</td>
+          <td style="font-size:0.78rem;color:var(--gray-500)">${d.role || '–'}</td>
+          <td style="text-align:center;font-weight:700;color:var(--v-color)">${d.V}</td>
+          <td style="text-align:center;font-weight:700;color:var(--a-color)">${d.A}</td>
+          <td style="text-align:center;font-weight:700;color:var(--r-color)">${d.R}</td>
+          <td style="text-align:center;font-weight:700;color:var(--k-color)">${d.K}</td>
+          <td><span class="style-chip" style="background:${STYLE_COLORS[dom]||'#6b7280'}">${d.dominant}</span></td>
+          <td style="font-size:0.78rem;color:var(--gray-500)">${date}</td>
+        </tr>`;
+    });
+  }
+  document.getElementById('table-count').textContent = `Showing ${filtered.length} of ${allData.length} records`;
+}
+
+/* ─── SORT ───────────────────────────────────────────────── */
+function sortTable(key) {
+  if (sortKey === key) sortAsc = !sortAsc;
+  else { sortKey = key; sortAsc = true; }
+  renderTable();
+}
+
+/* ─── EXPORT CSV ─────────────────────────────────────────── */
+function exportCSV() {
+  const headers = ["Timestamp","Name","Staff ID","Department","Role","V","A","R","K","Dominant"];
+  const rows = allData.map(d => [
+    d.timestamp, d.name, d.staffId, d.department, d.role,
+    d.V, d.A, d.R, d.K, d.dominant
+  ]);
+  const csv = [headers, ...rows].map(r => r.map(c => `"${String(c||'').replace(/"/g,'""')}"`).join(",")).join("\n");
+  const blob = new Blob([csv], { type: "text/csv" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `VARK_Results_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+}
+</script>
+</body>
+</html>
